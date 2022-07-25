@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>vip.sunxy.dubbo</groupId>
+    <groupId>com.weng</groupId>
     <artifactId>dubbo-demo</artifactId>
     <packaging>pom</packaging>
     <version>0.0.1</version>
@@ -32,6 +32,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+<!--            dubbo           -->
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-dependencies-bom</artifactId>
@@ -49,6 +50,7 @@
                 <artifactId>dubbo-registry-nacos</artifactId>
                 <version>${dubbo.version}</version>
             </dependency>
+<!--            nacos           -->
             <dependency>
                 <groupId>com.alibaba.nacos</groupId>
                 <artifactId>nacos-client</artifactId>

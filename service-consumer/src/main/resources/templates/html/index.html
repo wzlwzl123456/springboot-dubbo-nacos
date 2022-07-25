@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+    <link rel="stylesheet" href="../../static/layui/css/layui.css">
+</head>
+<script src="../../static/layui/layui.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+<style>
+    html, body {
+        width: 100%;
+        height: 100%;
+    }
+
+    .layout {
+        width: 100%;
+        height: 100%;
+    }
+
+    .topArea {
+        width: 80%;
+        height: 30%;
+    }
+
+    .tableArea {
+        width: 80%;
+        height: 70%;
+    }
+</style>
+<body>
+<div class="layout">
+    <div class="topArea">
+        <div style="margin: 2% 20%">
+            <button type="button" class="layui-btn" id="query">查询</button>
+            <button type="button" class="layui-btn" id="re">刷新</button>
+        </div>
+        <form class="layui-form" id="queryForm" style="margin: 2% 10% auto">
+            <div class="layui-form-item">
+                <label class="layui-form-label">书名</label>
+                <div class="layui-input-block">
+                    <input id="queryNameInput" type="text" name="Name" required lay-verify="required"
+                           placeholder="请输入书名"
+                           autocomplete="off" class="layui-input" style="width: 50%">
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="tableArea" style="display:block;margin: 10px auto">
+        <div id="laypage" style="margin-left: 10%"></div>
+        <table class="layui-hide" id="showTable" lay-filter="sTable"></table>
+    </div>
+
+</div>
+</body>
+<script src="../../static/layui/layui.js"></script>
+<!--表头按钮工具栏-->
+<script type="text/html" id="toolBarDemo">
+    <button type="button" class="layui-btn layui-btn-sm" id="add">增加</button>
+    <button type="button" class="layui-btn layui-btn-sm " id="delete">删除选中</button>
+</script>
+<!--每行的查看按钮-->
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="check" id="id_check">修改</a>
+    <a class="layui-btn layui-btn-xs" lay-event="check_1" id="id_check_1">查看</a>
+</script>
+<script type="text/javascript">
+    var baseurl = "http://127.0.0.1:8888/book"
+    $(document).ready(initTable(""))
+
+    // //跟据input初始化表格，input为空表示查询全部，不为空书名根据input查询
+    function initTable(input) {
+        //第一个ajax获取count总数
+        console.log(this.curr,this.limit)
+        $.ajax({
+            type: "post",
+            url: baseurl + "/fuzzyQueryBook",
+            async: true,
+            data: {
+                "curr":1,
+                "limit":this.limit,
+                "name": input
+            },//传input到后端getCount，全部查询input为“”
+            dataType: "json",
+            success: function (res) {
+                console.log(res);
+                layui.use('laypage', function () {
+                    //执行一个laypage实例
+                    layui.laypage.render({
+                        elem: 'laypage',
+                        count: res.count,
+                        layout: ['count', 'prev', 'page', 'next', 'limit', 'skip'],
+                        limit: 5,
+                        limits: [5],
+                        jump: function (obj, first) {
+                            console.log(obj.curr)
+                            //阻止第一页重复发起请求
+                            if(obj.curr==1){
+                                buildTable(res)
+                                return
+                            }
+                            $.ajax({
+                                type: "post",
+                                url: baseurl + "/fuzzyQueryBook",
+                                async: true,
+                                dataType: "json",
+                                data: {
+                                    curr: obj.curr,
+                                    limit: obj.limit,
+                                    name: input
+                                },
+                                success: function (res) {
+                                    console.log(res);
+                                    buildTable(res)
+                                }
+                            });
+                        }
+                    });
+                });
+            }
+        });
+    }
+
+    //静态数据构建表格，包括增加、删除、查看这三个表内按钮
+    function buildTable(res) {
+        layui.use(['layer', 'table'], function () {
+            console.log(res.data)
+            let new_data = $.extend(true, [], res.data);
+            layui.table.render({
+                elem: '#showTable',
+                loading: true,
+                toolbar: '#toolBarDemo',
+                cols: [[
+                    {type: 'checkbox', fixed: 'left', width: 100},
+                    {field: 'bookID', title: 'ID', width: 100, sort: true, fixed: 'left'},
+                    {field: 'bookName', title: '书名', width: 200},
+                    {field: 'bookCounts', title: '数量', width: 100},
+                    {field: 'detail', title: '详细信息', width: 410},
+                    {title: '操作', toolbar: '#barDemo', width: 120, fixed: 'right'}
+                ]],
+                data: new_data,
+                done: function () {
+                }
+            })
+            //添加按钮
+            $("#add").on('click', function () {
+                layer.open({
+                    title: '添加',
+                    type: 2,
+                    area: ['500px', '580px'],
+                    content: 'addBook.html'
+                })
+            });
+            //删除按钮
+            $("#delete").on('click', function () {
+                var checkStatus = layui.table.checkStatus('showTable');
+                console.log(checkStatus.data)
+                if (checkStatus.data.length == 0) {
+                    layer.alert('空选')
+                    return
+                }
+                var str = "";
+                for (let i = 0; i < checkStatus.data.length; i++) {
+                    str = str + checkStatus.data[i].bookID
+                    if (i != checkStatus.data.length - 1) {
+                        str = str + ",";
+                    }
+                }
+                layer.confirm('确定删除: ' + str + ' ?', {btn: ['确定', '取消']}, function () {
+                        $.ajax({
+                            type: 'POST', //请求的方式
+                            url: baseurl + '/deleteBook', // 请求的URL地址
+                            data: {
+                                "idList": str
+                            },// 这次请求要携带的数据
+                            success: function (res) { //请求成功之后的回调函数
+                                layer.alert(res)
+                                initTable("")
+                            }
+                        })
+                    }
+                )
+            });
+            //每行的查看按钮
+            layui.table.on('tool(sTable)', function (obj) {
+                if (obj.event == 'check') {
+                    console.log(obj.data)
+                    var lay = layer.open({
+                        type: 2,
+                        content: 'updateBook.html',
+                        area: ['500px', '400px'],
+                        title:"修改",
+                        success: function (layero, index) {
+                            var body = layer.getChildFrame('body', index);
+                            body.contents().find("#idInput").val(obj.data.bookID);
+                            body.contents().find("#nameInput").val(obj.data.bookName);
+                            body.contents().find("#countInput").val(obj.data.bookCounts);
+                            body.contents().find("#detailInput").val(obj.data.detail);
+                        }
+                    })
+                }
+                if (obj.event == 'check_1') {
+                    console.log(obj.data)
+                    var lay = layer.open({
+                        type: 1,
+                        title:"查看详细信息",
+                        content: '<div style="font-size:40px;word-break: break-all">'+obj.data.detail+'</div>',
+                        area: ['500px', '400px'],
+                    })
+                }
+            })
+        })
+    }
+
+    //刷新按钮
+    $("#re").on('click', function () {
+        $('#queryNameInput').val("")
+        initTable("")
+    });
+    //查询按钮
+    $("#query").on('click', function () {
+        initTable(layui.$('#queryNameInput').val())
+    })
+</script>
+</html>

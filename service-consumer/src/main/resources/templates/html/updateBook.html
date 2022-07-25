@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title id="title">查看</title>
+    <link rel="stylesheet" href="../../static/layui/css/layui.css">
+</head>
+<script src="../../static/layui/layui.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+<body>
+<form class="layui-form" id="updateForm" style="margin-top: 30px">
+    <div class="layui-form-item">
+        <label class="layui-form-label">ID</label>
+        <div class="layui-input-block">
+            <input id="idInput" name="Name" required lay-verify="required"
+                   autocomplete="off" class="layui-input" style="width: 80%" readonly="readonly">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">书名</label>
+        <div class="layui-input-block">
+            <input id="nameInput" name="Name" required lay-verify="required" placeholder="请输入书名"
+                   autocomplete="off" class="layui-input" style="width: 80%">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">数量</label>
+        <div class="layui-input-block">
+            <input id="countInput" type="text" name="Count" required lay-verify="required" placeholder="请输入数量"
+                   autocomplete="off" class="layui-input" style="width: 80%">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">详细信息</label>
+        <div class="layui-input-block">
+            <input id="detailInput" type="text" name="Detail" required lay-verify="required" placeholder="请输入详细信息"
+                   autocomplete="off" class="layui-input" style="width: 80%">
+        </div>
+    </div>
+</form>
+<button type="button" class="layui-btn" id="saveUpdateBook" style="display:block;margin: 10px auto">保存更改</button>
+</body>
+<script>
+    baseurl = "http://127.0.0.1:8888/book"
+
+    layui.use(['layer'], function () {
+        $('#saveUpdateBook').on('click', function () {
+            var book ={
+                "bookID":$('#idInput').val(),
+                "bookName":$('#nameInput').val(),
+                "bookCounts":$('#countInput').val(),
+                "detail":$('#detailInput').val()
+            }
+            $.ajax({
+                type: 'POST',
+                url: baseurl + '/updateBook',
+                data:book,
+                success: function (res) {
+                    console.log(res)
+                    var mylay = parent.layer.getFrameIndex(window.name);
+                    parent.layer.close(mylay);
+                    window.parent.initTable("")
+                }
+            })
+        })
+    })
+</script>
+</html>

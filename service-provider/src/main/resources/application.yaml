@@ -1,10 +1,18 @@
 server:
-  port: 14511
+  port: 8887
 spring:
   application:
     name: provider-service
   main:
     allow-bean-definition-overriding: true
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://localhost:3306/ssmbuild?useSSL=true&useUnicode=true&characterEncoding=utf8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
 dubbo:
   application:
     name: provider-service
@@ -13,7 +21,7 @@ dubbo:
     username: nacos
     password: nacos
   scan:
-    base-packages: vip.sunxy.provider.service.impl
+    base-packages: com.weng.provider.service.impl
   protocol:
     name: dubbo
     port: 15511
