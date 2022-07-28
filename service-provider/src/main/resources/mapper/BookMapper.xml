@@ -43,14 +43,14 @@
     </select>
 
     <select id="fuzzyQuery" resultType="com.weng.pojo.Books">
-        select  bookID, bookName, bookCounts, detail
+        select bookID, bookName, bookCounts, detail
         from books
         where bookName like concat('%', #{arg0}, '%')
         order by bookID asc
-        limit #{arg1},#{arg2}
+            limit #{arg1}, #{arg2}
     </select>
 
-<!--    获取当前查询的数据条数-->
+    <!--    获取当前查询的数据条数-->
     <select id="getCounts" resultType="int">
         select count(bookID)
         from books

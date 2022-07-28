@@ -9,13 +9,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RestController
+//用@Controller配合视图解析器返回到指定的页面
+@RestController//相当于@Controller和@ResponseBody合在一起,返回的是return里面的内容，无法返回到指定的页面
 @RequestMapping("/book")
-@CrossOrigin(originPatterns = "*", allowedHeaders = "*", methods = {}, allowCredentials = "true")
+@CrossOrigin(originPatterns = "*", allowedHeaders = "*", methods = {}, allowCredentials = "true")//处理跨域请求
 public class BookController {
 
-    //@DubboReference用来引用@DubboService暴露的服务,
-    @DubboReference(check = false)//配置check=false，解决启动顺序问题
+    //@DubboReference用来引用@DubboService暴露的服务
+    //配置check=false，解决提供者、消费者启动顺序问题
+    @DubboReference(check = false)
     private BookService bookService;
 
     //获得当前页查询数据及条数

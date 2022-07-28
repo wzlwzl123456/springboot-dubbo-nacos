@@ -44,11 +44,11 @@
             if (!$('#nameInput').val() || !$('#countInput').val() || !$('#detailInput').val()) {
                 layer.alert("不能为空")
             } else {
-                var book ={
-                    "bookID":0,
-                    "bookName":$('#nameInput').val(),
-                    "bookCounts":$('#countInput').val(),
-                    "detail":$('#detailInput').val()
+                var book = {
+                    "bookID": 0,
+                    "bookName": $('#nameInput').val(),
+                    "bookCounts": $('#countInput').val(),
+                    "detail": $('#detailInput').val()
                 }
                 $.ajax({
                     type: 'POST',

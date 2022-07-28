@@ -11,6 +11,7 @@ import java.util.List;
 public interface BookMapper {
 
     int getCounts(String bookName);
+
     //增加一个Book
     int addBook(Books book);
 
@@ -27,5 +28,5 @@ public interface BookMapper {
     List<Books> queryAllBook();
 
     //根据bookName模糊查询，返回list集合
-    List<Books> fuzzyQuery(String bookName,int start,int limit);
+    List<Books> fuzzyQuery(String bookName, int start, int limit);
 }

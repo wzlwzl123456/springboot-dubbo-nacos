@@ -73,14 +73,14 @@
     // //跟据input初始化表格，input为空表示查询全部，不为空书名根据input查询
     function initTable(input) {
         //第一个ajax获取count总数
-        console.log(this.curr,this.limit)
+        console.log(this.curr, this.limit)
         $.ajax({
             type: "post",
             url: baseurl + "/fuzzyQueryBook",
             async: true,
             data: {
-                "curr":1,
-                "limit":this.limit,
+                "curr": 1,
+                "limit": this.limit,
                 "name": input
             },//传input到后端getCount，全部查询input为“”
             dataType: "json",
@@ -97,7 +97,7 @@
                         jump: function (obj, first) {
                             console.log(obj.curr)
                             //阻止第一页重复发起请求
-                            if(obj.curr==1){
+                            if (obj.curr == 1) {
                                 buildTable(res)
                                 return
                             }
@@ -191,7 +191,7 @@
                         type: 2,
                         content: 'updateBook.html',
                         area: ['500px', '400px'],
-                        title:"修改",
+                        title: "修改",
                         success: function (layero, index) {
                             var body = layer.getChildFrame('body', index);
                             body.contents().find("#idInput").val(obj.data.bookID);
@@ -205,8 +205,8 @@
                     console.log(obj.data)
                     var lay = layer.open({
                         type: 1,
-                        title:"查看详细信息",
-                        content: '<div style="font-size:40px;word-break: break-all">'+obj.data.detail+'</div>',
+                        title: "查看详细信息",
+                        content: '<div style="font-size:40px;word-break: break-all">' + obj.data.detail + '</div>',
                         area: ['500px', '400px'],
                     })
                 }

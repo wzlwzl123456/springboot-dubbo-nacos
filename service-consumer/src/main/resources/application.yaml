@@ -5,6 +5,10 @@ spring:
     name: consumer-serivce
   main:
     allow-bean-definition-overriding: true
+  redis:
+    host: localhost
+    port: 6379
+    password:
 dubbo:
   application:
     name: consumer-serivce
@@ -12,3 +16,4 @@ dubbo:
     address: nacos://127.0.0.1:8848
     username: nacos
     password: nacos
+

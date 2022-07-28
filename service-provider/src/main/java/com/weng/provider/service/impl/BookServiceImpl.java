@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-//@DubboService用来暴露服务
+//@DubboService暴露服务
 @DubboService
 public class BookServiceImpl implements BookService {
     // service调dao层
@@ -38,10 +38,11 @@ public class BookServiceImpl implements BookService {
         return bookMapper.queryAllBook();
     }
 
-    public List<Books> fuzzyQuery(String bookName,int curr,int limit) {
-        return bookMapper.fuzzyQuery(bookName,limit*(curr-1),limit);
+    public List<Books> fuzzyQuery(String bookName, int curr, int limit) {
+        return bookMapper.fuzzyQuery(bookName, limit * (curr - 1), limit);
     }
-    public int getCounts(String bookName){
+
+    public int getCounts(String bookName) {
         return bookMapper.getCounts(bookName);
     }
 }

@@ -21,7 +21,7 @@ public interface BookService {
     List<Books> queryAllBook();
 
     //根据bookName模糊查询，返回list集合
-    List<Books> fuzzyQuery(String bookName,int curr,int limit);
+    List<Books> fuzzyQuery(String bookName, int curr, int limit);
 
     int getCounts(String bookName);
 }
